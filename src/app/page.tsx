@@ -8,8 +8,6 @@ import {
   Database, 
   CreditCard, 
   Zap, 
-  Shield,
-  Users,
   BarChart3,
   ArrowRight,
   Check

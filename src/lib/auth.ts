@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
 import { db } from './db';
-import { users, auth_sessions, type User, type PublicUser } from './schema';
+import { users, auth_sessions, type PublicUser } from './schema';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const SALT_ROUNDS = 12;
@@ -25,13 +25,13 @@ export function verifyToken(token: string): { userId: number } | null {
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
     return decoded;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
 // Authentication functions
-export async function createUser(email: string, password: string, name: string): Promise<PublicUser> {
+export async function createUser(email: string, password: string, name: string): Promise<Omit<PublicUser, "password_hash">> {
   const existingUser = await db.select().from(users).where(eq(users.email, email));
   
   if (existingUser.length > 0) {
@@ -46,12 +46,12 @@ export async function createUser(email: string, password: string, name: string):
     password_hash: passwordHash,
   }).returning();
 
-  // Return user without password hash
-  const { password_hash, ...publicUser } = newUser;
-  return publicUser;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const rest = (({ password_hash, ...rest }) => rest)(newUser);
+  return rest as PublicUser;
 }
 
-export async function authenticateUser(email: string, password: string): Promise<PublicUser | null> {
+export async function authenticateUser(email: string, password: string): Promise<Omit<PublicUser, "password_hash"> | null> {
   const [user] = await db.select().from(users).where(eq(users.email, email));
   
   if (!user) {
@@ -64,33 +64,33 @@ export async function authenticateUser(email: string, password: string): Promise
     return null;
   }
 
-  // Return user without password hash
-  const { password_hash, ...publicUser } = user;
-  return publicUser;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const rest = (({ password_hash, ...rest }) => rest)(user);
+  return rest as PublicUser;
 }
 
-export async function getUserById(id: number): Promise<PublicUser | null> {
+export async function getUserById(id: number): Promise<Omit<PublicUser, "password_hash"> | null> {
   const [user] = await db.select().from(users).where(eq(users.id, id));
   
   if (!user) {
     return null;
   }
 
-  // Return user without password hash
-  const { password_hash, ...publicUser } = user;
-  return publicUser;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const rest = (({ password_hash, ...rest }) => rest)(user);
+  return rest as PublicUser;
 }
 
-export async function getUserByEmail(email: string): Promise<PublicUser | null> {
+export async function getUserByEmail(email: string): Promise<Omit<PublicUser, "password_hash"> | null> {
   const [user] = await db.select().from(users).where(eq(users.email, email));
   
   if (!user) {
     return null;
   }
 
-  // Return user without password hash
-  const { password_hash, ...publicUser } = user;
-  return publicUser;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const rest = (({ password_hash, ...rest }) => rest)(user);
+  return rest as PublicUser;
 }
 
 // Session management (optional)

@@ -1,6 +1,6 @@
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser } from '@/lib/auth';
-import { insertUserSchema } from '@/lib/schema';
 import { z } from 'zod';
 
 const registerSchema = z.object({

@@ -109,7 +109,7 @@ export interface Submission {
   id: string;
   shared_link_id: string;
   form_id: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   submitted_at: string;
   ip_address?: string;
   user_agent?: string;

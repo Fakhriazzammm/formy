@@ -13,7 +13,7 @@ import {
 
 interface ConnectionResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   message?: string;
   count?: number;
@@ -363,8 +363,8 @@ export default function TestNeonPage() {
             <h3 className="font-medium text-gray-800 mb-2">Instructions:</h3>
             <ol className="text-sm text-gray-600 space-y-1">
               <li>1. Make sure your <code className="bg-gray-200 px-1 rounded">.env.local</code> file has the correct <code className="bg-gray-200 px-1 rounded">DATABASE_URL</code></li>
-              <li>2. Click "Test Connection" to verify Neon database connectivity</li>
-              <li>3. Click "Create Tables" to set up the database schema</li>
+              <li>2. Click &quot;Test Connection&quot; to verify Neon database connectivity</li>
+              <li>3. Click &quot;Create Tables&quot; to set up the database schema</li>
               <li>4. Use other buttons to test various database operations</li>
               <li>5. Check your Neon console to see the data</li>
             </ol>

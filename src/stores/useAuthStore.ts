@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { createUser, authenticateUser, getUserById } from '@/lib/auth';
+import { createUser, authenticateUser } from '@/lib/auth';
 import { PublicUser } from '@/lib/schema';
 
 interface AuthState {
@@ -18,7 +18,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       isLoading: false,
       isAuthenticated: false,

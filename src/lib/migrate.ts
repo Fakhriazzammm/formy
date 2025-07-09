@@ -1,4 +1,3 @@
-import { migrate } from 'drizzle-orm/neon-http/migrator';
 import { db } from './db';
 import { sql } from 'drizzle-orm';
 

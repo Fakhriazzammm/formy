@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { format, formatDistanceToNow, addDays, isAfter, isBefore } from 'date-fns';
+import { format, formatDistanceToNow, addDays, isAfter } from 'date-fns';
 import { id } from 'date-fns/locale';
 
 // Utility untuk menggabungkan className dengan Tailwind
@@ -108,7 +108,7 @@ export function deepClone<T>(obj: T): T {
 }
 
 // Debounce function
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number
 ): (...args: Parameters<T>) => void {
@@ -120,7 +120,7 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 // Throttle function
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -145,7 +145,7 @@ export const storage = {
       return defaultValue;
     }
   },
-  set: (key: string, value: any): void => {
+  set: (key: string, value: unknown): void => {
     if (typeof window === 'undefined') return;
     try {
       window.localStorage.setItem(key, JSON.stringify(value));

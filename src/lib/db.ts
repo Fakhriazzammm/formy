@@ -62,7 +62,7 @@ export async function testConnection() {
 }
 
 // Enhanced helper function to execute raw SQL with better error handling
-export async function executeQuery(query: string, params?: any[]) {
+export async function executeQuery(query: string, params?: unknown[]) {
   if (!query || query.trim().length === 0) {
     throw new Error('Query cannot be empty');
   }

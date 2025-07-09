@@ -151,7 +151,7 @@ export async function getDatabaseStats() {
     let formsCount = 0;
     try {
       const formCountResult = await sql`SELECT COUNT(*) as count FROM forms`;
-      formsCount = Number((formCountResult[0] as any).count);
+      formsCount = Number((formCountResult[0] as { count: string }).count);
     } catch {
       // Forms table doesn't exist yet
       formsCount = 0;
@@ -160,8 +160,8 @@ export async function getDatabaseStats() {
     return {
       success: true,
       data: {
-        users: Number((userCount[0] as any).count),
-        sessions: Number((sessionCount[0] as any).count),
+        users: Number((userCount[0] as { count: string }).count),
+        sessions: Number((sessionCount[0] as { count: string }).count),
         forms: formsCount,
         timestamp: new Date().toISOString()
       }
@@ -185,7 +185,7 @@ export async function cleanExpiredSessions() {
       WHERE expires_at < NOW()
     `;
     
-    const countToDelete = Number((expiredCount[0] as any).count);
+    const countToDelete = Number((expiredCount[0] as { count: string }).count);
     
     // Then delete them
     await sql`
@@ -229,7 +229,7 @@ export async function getRecentActivity() {
       success: true,
       data: {
         recent_users: recentUsers,
-        active_sessions: Number((activeSessions[0] as any).count)
+        active_sessions: Number((activeSessions[0] as { count: string }).count)
       }
     };
   } catch (error) {
