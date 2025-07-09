@@ -218,7 +218,7 @@ export default function TestNeonPage() {
                     <p>{connectionResult.message}</p>
                     {connectionResult.data && (
                       <pre className="mt-2 text-sm bg-green-100 p-2 rounded">
-                        {JSON.stringify(connectionResult.data, null, 2)}
+                        {JSON.stringify(connectionResult.data as Record<string, any>, null, 2)}
                       </pre>
                     )}
                   </div>
