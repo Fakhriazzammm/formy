@@ -2,34 +2,39 @@ import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import { sql } from 'drizzle-orm';
 
-// Validate environment variables
-function validateDatabaseConfig() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL is not set. Please check your .env.local file.');
-  }
-  
-  // Validate DATABASE_URL format
-  if (!process.env.DATABASE_URL.includes('neon.tech')) {
-    console.warn('Warning: DATABASE_URL does not appear to be a Neon database URL');
-  }
-}
+// Gracefully handle missing DATABASE_URL at import / build time.
+// We only establish a real connection if the environment variable is present.
+const DATABASE_URL = process.env.DATABASE_URL;
 
-// Initialize database configuration
-validateDatabaseConfig();
-
-// Create Neon connection with error handling
-let connection: ReturnType<typeof neon>;
+let connection: ReturnType<typeof neon> | null = null;
 let db: ReturnType<typeof drizzle>;
 
-try {
-  connection = neon(process.env.DATABASE_URL!);
-  db = drizzle(connection);
-} catch (error) {
-  console.error('Failed to initialize database connection:', error);
-  throw new Error('Database initialization failed. Please check your DATABASE_URL.');
+if (DATABASE_URL) {
+  // Establish real connection
+  try {
+    connection = neon(DATABASE_URL);
+    db = drizzle(connection);
+  } catch (error) {
+    console.error('Failed to initialize database connection:', error);
+    // Fallback to proxy that throws informative error on any method usage
+    db = new Proxy({}, {
+      get() {
+        throw new Error('Database initialization failed. Please check your DATABASE_URL.');
+      },
+    }) as unknown as ReturnType<typeof drizzle>;
+  }
+} else {
+  // No DATABASE_URL provided – create proxy that throws on access, but do NOT throw during import.
+  console.warn('Warning: DATABASE_URL is not set. Database operations will fail until it is provided.');
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  db = new Proxy({}, {
+    get() {
+      throw new Error('DATABASE_URL is not set. Please set it in your environment before performing database operations.');
+    },
+  }) as unknown as ReturnType<typeof drizzle>;
 }
 
-// Export the database instance
+// Export the (possibly proxy) database instance so other modules can import safely.
 export { db };
 
 // Enhanced test connection function
@@ -37,8 +42,9 @@ export async function testConnection() {
   try {
     const startTime = Date.now();
     const result = await db.execute(sql`SELECT 1 as test, NOW() as timestamp, version() as db_version`);
+    // `db.execute` returns an object with a `rows` property (NeonHttpQueryResult)
+    const rows = (result as { rows: Array<Record<string, unknown>> }).rows;
     const endTime = Date.now();
-    const rows = result as Array<Record<string, unknown>>;
     const connectionInfo = {
       success: true,
       responseTime: `${endTime - startTime}ms`,
@@ -62,22 +68,28 @@ export async function testConnection() {
 }
 
 // Enhanced helper function to execute raw SQL with better error handling
-export async function executeQuery(query: string, params?: unknown[]) {
+export async function executeQuery(query: string) {
   if (!query || query.trim().length === 0) {
     throw new Error('Query cannot be empty');
   }
   
   try {
     const startTime = Date.now();
-    const result = await db.execute(sql.raw(query, params));
+    // Drizzle's `sql.raw()` accepts a single SQL string; params should be interpolated beforehand
+    const result = await db.execute(sql.raw(query));
     const endTime = Date.now();
     
     console.log(`✅ Query executed successfully in ${endTime - startTime}ms`);
+    // Support both array and NeonHttpQueryResult shapes
+    const rows = (Array.isArray(result)
+      ? result
+      : (result as { rows: Array<Record<string, unknown>> }).rows);
+
     return {
       success: true,
-      data: result,
+      data: rows,
       executionTime: `${endTime - startTime}ms`,
-      rowCount: Array.isArray(result) ? result.length : 0
+      rowCount: rows.length
     };
   } catch (error) {
     const errorInfo = {
@@ -104,9 +116,11 @@ export async function checkDatabaseHealth() {
         (SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public') as table_count
     `);
     
+    const rows = (healthCheck as { rows: Array<Record<string, unknown>> }).rows;
+
     return {
       success: true,
-      data: healthCheck[0],
+      data: rows[0],
       timestamp: new Date().toISOString()
     };
   } catch (error) {

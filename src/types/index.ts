@@ -129,6 +129,9 @@ export interface Payment {
   payment_method?: string;
   created_at: string;
   paid_at?: string;
+  customer?: { name: string; email: string };
+  payment_url?: string;
+  slug?: string;
 }
 
 // AI Chat Types

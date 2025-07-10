@@ -7,11 +7,22 @@ export const neonAuthConfig = {
   secretKey: process.env.STACK_SECRET_SERVER_KEY!,
 };
 
-// Database connection
-export const sql = neon(process.env.DATABASE_URL!);
+// Gracefully handle missing DATABASE_URL to avoid crashes during build time.
+const DATABASE_URL = process.env.DATABASE_URL;
 
-// Server-side database client (using neon directly)
-export const db = neon(process.env.DATABASE_URL!);
+function createNeonProxy() {
+  return new Proxy(() => {}, {
+    apply() {
+      throw new Error('DATABASE_URL is not set. Database operations are unavailable.');
+    },
+  }) as unknown as ReturnType<typeof neon>;
+}
+
+// Database connection (lazy / safe)
+export const sql = DATABASE_URL ? neon(DATABASE_URL) : createNeonProxy();
+
+// Server-side database client (alias for sql)
+export const db = sql;
 
 // Validate environment variables
 export function validateNeonAuthConfig() {
@@ -36,8 +47,10 @@ export async function testNeonAuthConnection() {
   try {
     validateNeonAuthConfig();
     
-    // Test database connection
-    const dbResult = await sql`SELECT NOW() as current_time`;
+    const dbResult = (await sql`SELECT NOW() as current_time`) as unknown[];
+    if (Array.isArray(dbResult) && dbResult.length > 0 && typeof dbResult[0] === 'object' && dbResult[0] !== null) {
+      const row = dbResult[0] as Record<string, unknown>;
+    }
     
     return {
       success: true,

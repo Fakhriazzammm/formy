@@ -4,8 +4,20 @@ import { revalidatePath } from "next/cache";
 import { testNeonAuthConnection } from "@/lib/neon-auth";
 import { testStackConnection } from "@/lib/stack";
 
-// Initialize Neon connection
-const sql = neon(process.env.DATABASE_URL!);
+// Initialize Neon connection with graceful fallback when DATABASE_URL is absent
+const DATABASE_URL = process.env.DATABASE_URL;
+
+function createNeonProxy() {
+  return new Proxy(() => {}, {
+    apply() {
+      throw new Error("DATABASE_URL is not set. Database operations are unavailable.");
+    },
+  }) as unknown as ReturnType<typeof neon>;
+}
+
+// Cast to any to simplify result typings in this utility-focused module
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sql: any = DATABASE_URL ? neon(DATABASE_URL) : createNeonProxy();
 
 // Test Neon Auth configuration
 export async function testNeonAuth() {
@@ -20,7 +32,9 @@ export async function testStack() {
 // Test connection action
 export async function testNeonConnection() {
   try {
-    const result = await sql`SELECT NOW() as current_time, version() as db_version`;
+    // Cast query result to any[] for simplified typing
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result: any[] = await sql`SELECT NOW() as current_time, version() as db_version`;
     return {
       success: true,
       data: result[0],
