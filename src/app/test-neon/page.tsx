@@ -19,6 +19,44 @@ interface ConnectionResult {
   count?: number;
 }
 
+interface NeonConnectionData {
+  current_time: string;
+  db_version: string;
+}
+
+interface UsersData {
+  id: number;
+  email: string;
+  name: string;
+  email_verified: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface StatsData {
+  users: number;
+  sessions: number;
+  forms: number;
+  timestamp: string;
+}
+
+interface ActivityData {
+  recent_users: UsersData[];
+  active_sessions: number;
+}
+
+interface AuthConfig {
+  projectId: string;
+  publishableKey: string;
+  secretKey: string;
+}
+
+interface NeonAuthData {
+  database: string;
+  auth_config: AuthConfig;
+  timestamp: string;
+}
+
 export default function TestNeonPage() {
   const [connectionResult, setConnectionResult] = useState<ConnectionResult | null>(null);
   const [users, setUsers] = useState<ConnectionResult | null>(null);
@@ -216,9 +254,9 @@ export default function TestNeonPage() {
                 {connectionResult.success ? (
                   <div className="text-green-700">
                     <p>{connectionResult.message}</p>
-                    {connectionResult.data && (
+                    {typeof connectionResult.data === 'object' && connectionResult.data !== null && (
                       <pre className="mt-2 text-sm bg-green-100 p-2 rounded">
-                        {JSON.stringify(connectionResult.data as Record<string, any>, null, 2)}
+                        {JSON.stringify(connectionResult.data as NeonConnectionData, null, 2)}
                       </pre>
                     )}
                   </div>
@@ -243,7 +281,7 @@ export default function TestNeonPage() {
                 {users.success ? (
                   <div className="text-blue-700">
                     <pre className="text-sm bg-blue-100 p-2 rounded overflow-auto">
-                      {JSON.stringify(users.data, null, 2)}
+                      {JSON.stringify(users.data as UsersData[], null, 2)}
                     </pre>
                   </div>
                 ) : (
@@ -266,21 +304,25 @@ export default function TestNeonPage() {
                 </h3>
                 {stats.success ? (
                   <div className="text-orange-700">
-                    <div className="grid grid-cols-3 gap-4 mb-2">
-                      <div className="bg-orange-100 p-2 rounded text-center">
-                        <div className="text-2xl font-bold">{stats.data.users}</div>
-                        <div className="text-sm">Users</div>
-                      </div>
-                      <div className="bg-orange-100 p-2 rounded text-center">
-                        <div className="text-2xl font-bold">{stats.data.sessions}</div>
-                        <div className="text-sm">Sessions</div>
-                      </div>
-                      <div className="bg-orange-100 p-2 rounded text-center">
-                        <div className="text-2xl font-bold">{stats.data.forms}</div>
-                        <div className="text-sm">Forms</div>
-                      </div>
-                    </div>
-                    <p className="text-sm">Updated: {new Date(stats.data.timestamp).toLocaleString()}</p>
+                    {typeof stats.data === 'object' && stats.data !== null ? (
+                      <>
+                        <div className="grid grid-cols-3 gap-4 mb-2">
+                          <div className="bg-orange-100 p-2 rounded text-center">
+                            <div className="text-2xl font-bold">{(stats.data as StatsData).users}</div>
+                            <div className="text-sm">Users</div>
+                          </div>
+                          <div className="bg-orange-100 p-2 rounded text-center">
+                            <div className="text-2xl font-bold">{(stats.data as StatsData).sessions}</div>
+                            <div className="text-sm">Sessions</div>
+                          </div>
+                          <div className="bg-orange-100 p-2 rounded text-center">
+                            <div className="text-2xl font-bold">{(stats.data as StatsData).forms}</div>
+                            <div className="text-sm">Forms</div>
+                          </div>
+                        </div>
+                        <p className="text-sm">Updated: {new Date((stats.data as StatsData).timestamp).toLocaleString()}</p>
+                      </>
+                    ) : null}
                   </div>
                 ) : (
                   <p className="text-red-700">{stats.error}</p>
@@ -302,13 +344,17 @@ export default function TestNeonPage() {
                 </h3>
                 {activity.success ? (
                   <div className="text-cyan-700">
-                    <p className="mb-2">Active Sessions: {activity.data.active_sessions}</p>
-                    <div className="bg-cyan-100 p-2 rounded">
-                      <h4 className="font-medium mb-1">Recent Users:</h4>
-                      <pre className="text-sm overflow-auto">
-                        {JSON.stringify(activity.data.recent_users, null, 2)}
-                      </pre>
-                    </div>
+                    {typeof activity.data === 'object' && activity.data !== null ? (
+                      <>
+                        <p className="mb-2">Active Sessions: {(activity.data as ActivityData).active_sessions}</p>
+                        <div className="bg-cyan-100 p-2 rounded">
+                          <h4 className="font-medium mb-1">Recent Users:</h4>
+                          <pre className="text-sm overflow-auto">
+                            {JSON.stringify((activity.data as ActivityData).recent_users, null, 2)}
+                          </pre>
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 ) : (
                   <p className="text-red-700">{activity.error}</p>
@@ -331,25 +377,25 @@ export default function TestNeonPage() {
                 {authResult.success ? (
                   <div className="text-indigo-700">
                     <p>{authResult.message}</p>
-                    {authResult.data && (
+                    {typeof authResult.data === 'object' && authResult.data !== null ? (
                       <div className="mt-2 space-y-2">
                         <div className="bg-indigo-100 p-2 rounded">
-                          <strong>Database:</strong> {authResult.data.database}
+                          <strong>Database:</strong> {(authResult.data as NeonAuthData).database}
                         </div>
                         <div className="bg-indigo-100 p-2 rounded">
-                          <strong>Project ID:</strong> {authResult.data.auth_config.projectId}
+                          <strong>Project ID:</strong> {(authResult.data as NeonAuthData).auth_config.projectId}
                         </div>
                         <div className="bg-indigo-100 p-2 rounded">
-                          <strong>Publishable Key:</strong> {authResult.data.auth_config.publishableKey}
+                          <strong>Publishable Key:</strong> {(authResult.data as NeonAuthData).auth_config.publishableKey}
                         </div>
                         <div className="bg-indigo-100 p-2 rounded">
-                          <strong>Secret Key:</strong> {authResult.data.auth_config.secretKey}
+                          <strong>Secret Key:</strong> {(authResult.data as NeonAuthData).auth_config.secretKey}
                         </div>
                         <div className="bg-indigo-100 p-2 rounded">
-                          <strong>Timestamp:</strong> {authResult.data.timestamp}
+                          <strong>Timestamp:</strong> {(authResult.data as NeonAuthData).timestamp}
                         </div>
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 ) : (
                   <p className="text-red-700">{authResult.error}</p>

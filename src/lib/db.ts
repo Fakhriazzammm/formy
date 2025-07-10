@@ -38,13 +38,13 @@ export async function testConnection() {
     const startTime = Date.now();
     const result = await db.execute(sql`SELECT 1 as test, NOW() as timestamp, version() as db_version`);
     const endTime = Date.now();
-    
+    const rows = result as Array<Record<string, unknown>>;
     const connectionInfo = {
       success: true,
       responseTime: `${endTime - startTime}ms`,
-      timestamp: result[0]?.timestamp,
-      version: result[0]?.db_version,
-      test: result[0]?.test
+      timestamp: rows[0]?.timestamp,
+      version: rows[0]?.db_version,
+      test: rows[0]?.test
     };
     
     console.log('✅ Database connection successful:', connectionInfo);
