@@ -9,14 +9,14 @@ export type SpreadsheetConfig = {
 };
 
 // Placeholder: fungsi otorisasi Google Sheets API
-export async function authorizeGoogleSheets(credentials: unknown) {
+export async function authorizeGoogleSheets() {
   // TODO: Implementasi OAuth2 flow atau service account
   // Kembalikan token/klien Google API
   throw new Error("Belum diimplementasikan: authorizeGoogleSheets");
 }
 
 // Fungsi untuk menulis data ke Google Sheets
-export async function appendToSheet(config: SpreadsheetConfig, data: Record<string, string | number | boolean | string[] | undefined>) {
+export async function appendToSheet() {
   // TODO: Implementasi fetch ke Google Sheets API
   // Gunakan config.fieldMapping untuk mapping data form ke kolom sheet
   // Contoh: POST ke https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{sheetName}!A1:append
@@ -24,7 +24,7 @@ export async function appendToSheet(config: SpreadsheetConfig, data: Record<stri
 }
 
 // Fungsi untuk membaca data dari Google Sheets
-export async function getSheetData(config: SpreadsheetConfig) {
+export async function getSheetData() {
   // TODO: Implementasi fetch ke Google Sheets API
   throw new Error("Belum diimplementasikan: getSheetData");
 }
@@ -39,13 +39,13 @@ export function mapFormDataToSheet(data: Record<string, string | number | boolea
 }
 
 // Placeholder: real-time sync (bisa pakai polling atau webhook)
-export function setupRealtimeSync(config: SpreadsheetConfig, onChange: (rows: unknown[]) => void) {
+export function setupRealtimeSync() {
   // TODO: Implementasi polling atau webhook Google Sheets
   throw new Error("Belum diimplementasikan: setupRealtimeSync");
 }
 
 // Placeholder: validasi data sebelum kirim ke sheet
-export function validateSheetData(data: Record<string, string | number | boolean | string[] | undefined>, mapping: Record<string, string>) {
+export function validateSheetData() {
   // TODO: Implementasi validasi sesuai kebutuhan (misal: required, tipe data)
   return true;
 } 

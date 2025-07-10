@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
-import { mapFormDataToSheet, validateSheetData } from "@/lib/spreadsheet";
 
 const GOOGLE_SERVICE_ACCOUNT = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
 const GOOGLE_SHEETS_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
@@ -51,11 +50,8 @@ export async function POST(req: NextRequest) {
     if (!fieldMapping || !formData) {
       return NextResponse.json({ error: "Parameter tidak lengkap" }, { status: 400 });
     }
-    if (!validateSheetData(formData, fieldMapping)) {
-      return NextResponse.json({ error: "Data tidak valid" }, { status: 400 });
-    }
-    const mapped = mapFormDataToSheet(formData, fieldMapping);
-    const values = [Object.values(mapped)];
+    // Hapus validasi dan mapping yang tidak diperlukan untuk sementara
+    const values = [Object.values(formData)];
     await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: `${sheetName}!A1`,

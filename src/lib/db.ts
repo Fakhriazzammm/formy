@@ -26,7 +26,6 @@ if (DATABASE_URL) {
 } else {
   // No DATABASE_URL provided – create proxy that throws on access, but do NOT throw during import.
   console.warn('Warning: DATABASE_URL is not set. Database operations will fail until it is provided.');
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   db = new Proxy({}, {
     get() {
       throw new Error('DATABASE_URL is not set. Please set it in your environment before performing database operations.');

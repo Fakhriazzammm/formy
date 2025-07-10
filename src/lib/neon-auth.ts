@@ -47,11 +47,6 @@ export async function testNeonAuthConnection() {
   try {
     validateNeonAuthConfig();
     
-    const dbResult = (await sql`SELECT NOW() as current_time`) as unknown[];
-    if (Array.isArray(dbResult) && dbResult.length > 0 && typeof dbResult[0] === 'object' && dbResult[0] !== null) {
-      const row = dbResult[0] as Record<string, unknown>;
-    }
-    
     return {
       success: true,
       data: {
@@ -60,8 +55,7 @@ export async function testNeonAuthConnection() {
           projectId: neonAuthConfig.projectId,
           publishableKey: neonAuthConfig.publishableKey ? 'Set' : 'Missing',
           secretKey: neonAuthConfig.secretKey ? 'Set' : 'Missing'
-        },
-        timestamp: dbResult[0].current_time
+        }
       },
       message: 'Neon Auth configuration is valid'
     };

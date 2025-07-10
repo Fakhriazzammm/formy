@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { executeQuery } from "@/lib/db";
 import { verifyToken, getUserById } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
@@ -13,15 +13,15 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const slug = searchParams.get("slug");
     if (!slug) return NextResponse.json({ error: "Slug required" }, { status: 400 });
-    const result = await db.query(`
+    const result = await executeQuery(`
       SELECT p.*, l.slug
       FROM payments p
       LEFT JOIN payment_links l ON l.payment_id = p.id
-      WHERE l.slug = $1
+      WHERE l.slug = '${slug}'
       LIMIT 1
-    `, [slug]);
-    if (!result.rows.length) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    const row = result.rows[0];
+    `);
+    if (!result.data.length) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const row = result.data[0];
     const customer = row.customer ? JSON.parse(row.customer) : null;
     if (!customer || customer.email !== user.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });

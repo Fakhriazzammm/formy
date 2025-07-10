@@ -1,5 +1,6 @@
 import React from "react";
 import { ThemeConfig } from "./ThemeGenerator";
+import Image from 'next/image';
 
 const ThemePreview: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
   return (
@@ -13,7 +14,7 @@ const ThemePreview: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
       minHeight: 180,
       textAlign: "center"
     }}>
-      {theme.logo && <img src={theme.logo} alt="Logo" style={{ maxHeight: 48, marginBottom: 12 }} />}
+      {theme.logo && <Image src={theme.logo || '/placeholder-logo.png'} alt="Logo" width={100} height={50} />}
       <h3 style={{ color: theme.primary }}>{theme.name}</h3>
       <p style={{ color: theme.secondary }}>Contoh judul form</p>
       <input placeholder="Input contoh" style={{ padding: 8, borderRadius: 6, border: `1px solid ${theme.secondary}`, width: "80%", marginBottom: 8 }} />

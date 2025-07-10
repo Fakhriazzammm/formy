@@ -1,7 +1,6 @@
 import { pgTable, serial, text, timestamp, boolean, varchar, uuid, jsonb } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod/v4';
-import { sql } from "drizzle-orm";
 
 // Users table
 export const users = pgTable('users', {
@@ -87,6 +86,8 @@ export const insertFormSchema = createInsertSchema(forms);
 export const selectFormSchema = createSelectSchema(forms);
 export const insertPaymentSchema = createInsertSchema(payments);
 export const selectPaymentSchema = createSelectSchema(payments);
+export const insertPaymentLinkSchema = createInsertSchema(payment_links);
+export const selectPaymentLinkSchema = createSelectSchema(payment_links);
 export const insertSharedLinkSchema = createInsertSchema(shared_links);
 export const selectSharedLinkSchema = createSelectSchema(shared_links);
 export const insertSubmissionSchema = createInsertSchema(submissions);
@@ -103,6 +104,8 @@ export type Form = typeof forms.$inferSelect;
 export type NewForm = typeof forms.$inferInsert;
 export type Payment = typeof payments.$inferSelect;
 export type NewPayment = typeof payments.$inferInsert;
+export type PaymentLink = typeof payment_links.$inferSelect;
+export type NewPaymentLink = typeof payment_links.$inferInsert;
 export type SharedLink = typeof shared_links.$inferSelect;
 export type NewSharedLink = typeof shared_links.$inferInsert;
 export type Submission = typeof submissions.$inferSelect;

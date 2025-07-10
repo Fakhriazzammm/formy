@@ -48,7 +48,7 @@ const ChatInterface: React.FC = () => {
         setComponents({ components: parsed });
         setInfo("Live preview form berhasil diupdate dari AI!");
       }
-    } catch (e) {
+    } catch {
       setError("Gagal mendapatkan balasan dari AI.");
     } finally {
       setLoading(false);

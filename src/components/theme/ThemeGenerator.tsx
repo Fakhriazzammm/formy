@@ -73,8 +73,8 @@ const ThemeGenerator: React.FC = () => {
       } else {
         setError("AI tidak mengembalikan format tema yang valid.");
       }
-    } catch (e: any) {
-      setError("Gagal generate tema dari AI.");
+    } catch {
+      setError("Gagal generate tema dari AI");
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { executeQuery } from "@/lib/db";
 import { randomUUID } from "crypto";
 
 const MAYAR_API_KEY = process.env.MAYAR_API_KEY!;
@@ -44,8 +44,8 @@ export async function POST(req: NextRequest) {
     // Simpan ke database
     const paymentId = randomUUID();
     const slug = paymentId.slice(0, 8);
-    await db.query(`INSERT INTO payments (id, mayar_order_id, amount, status, customer, method) VALUES ($1, $2, $3, $4, $5, $6)`, [paymentId, data.id, amount, data.status || 'pending', JSON.stringify(customer), method]);
-    await db.query(`INSERT INTO payment_links (id, payment_id, slug) VALUES ($1, $2, $3)`, [randomUUID(), paymentId, slug]);
+    await executeQuery(`INSERT INTO payments (id, mayar_order_id, amount, status, customer, method) VALUES ('${paymentId}', '${data.id}', ${amount}, '${data.status || 'pending'}', '${JSON.stringify(customer)}', '${method}')`);
+    await executeQuery(`INSERT INTO payment_links (id, payment_id, slug) VALUES ('${randomUUID()}', '${paymentId}', '${slug}')`);
     return NextResponse.json({ payment_url: data.invoice_url, invoice_id: data.id, slug });
   } catch (e: unknown) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });

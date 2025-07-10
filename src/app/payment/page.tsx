@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const PAYMENT_METHODS = [
@@ -9,7 +9,7 @@ const PAYMENT_METHODS = [
   { label: "E-wallet", value: "ewallet" },
 ];
 
-export default function PaymentPage({ formData }: { formData?: Record<string, string | number | boolean | string[] | undefined> }) {
+function PaymentPageContent() {
   const [amount, setAmount] = useState(5000);
   const [method, setMethod] = useState("qris");
   const [customer, setCustomer] = useState({ name: "", email: "" });
@@ -21,17 +21,13 @@ export default function PaymentPage({ formData }: { formData?: Record<string, st
   const [showSuccess, setShowSuccess] = useState(false);
 
   React.useEffect(() => {
-    if (formData) {
-      if (formData.amount !== undefined) setAmount(Number(formData.amount));
-      if (formData.method !== undefined) setMethod(String(formData.method));
-    }
     if (searchParams.get("success")) {
       setShowSuccess(true);
       setTimeout(() => {
         router.push("/builder");
       }, 4000);
     }
-  }, [formData, searchParams, router]);
+  }, [searchParams, router]);
 
   const handlePay = async () => {
     setLoading(true);
@@ -97,5 +93,13 @@ export default function PaymentPage({ formData }: { formData?: Record<string, st
         </div>
       )}
     </div>
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentPageContent />
+    </Suspense>
   );
 } 

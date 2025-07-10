@@ -21,8 +21,9 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { FormComponent } from '@/types/form';
+import { FormComponent } from '@/stores/useFormStore';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const componentMap: Record<string, React.ComponentType<any>> = {
   text: TextInput,
   textarea: Textarea,
@@ -37,7 +38,7 @@ const componentMap: Record<string, React.ComponentType<any>> = {
   file: FileUpload,
 };
 
-function SortableFormItem({ c, idx, selectedId, selectComponent, removeComponent }: { c: FormComponent; idx: number; selectedId: string | null; selectComponent: (id: string | null) => void; removeComponent: (id: string) => void; }) {
+function SortableFormItem({ c, selectedId, selectComponent, removeComponent }: { c: FormComponent; selectedId: string | null; selectComponent: (id: string | null) => void; removeComponent: (id: string) => void; }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: c.id });
   const Comp = componentMap[c.type] || (() => <div>Unknown</div>);
   return (
@@ -97,11 +98,10 @@ export default function FormLivePreview() {
               Drag komponen ke sini atau klik dari palette untuk mulai membangun form
             </div>
           ) : (
-            components.map((c, idx) => (
+            components.map((c) => (
               <SortableFormItem
                 key={c.id}
                 c={c}
-                idx={idx}
                 selectedId={selectedId}
                 selectComponent={selectComponent}
                 removeComponent={removeComponent}

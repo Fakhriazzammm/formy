@@ -37,8 +37,11 @@ export default function FormComponentProperties() {
           <label>Opsi (pisahkan dengan koma)</label>
           <input
             type="text"
-            value={comp.props.options ? comp.props.options.map((o: string) => o).join(',') : ''}
-            onChange={e => updateComponent(comp.id, { options: e.target.value.split(',').map((v: string) => ({ label: v.trim(), value: v.trim() })) })}
+            value={comp.props.options ? comp.props.options.map((o: Record<string, string> | string) => typeof o === 'string' ? o : o.label).join(',') : ''}
+            onChange={e => updateComponent(comp.id, { 
+              // @ts-expect-error - Tipe options berbeda untuk komponen yang berbeda
+              options: e.target.value.split(',').map((v: string) => ({ label: v.trim(), value: v.trim() })) 
+            })}
             style={{ width: '100%', marginTop: 4, marginBottom: 8, padding: 6, borderRadius: 4, border: '1px solid #ddd' }}
           />
         </div>
