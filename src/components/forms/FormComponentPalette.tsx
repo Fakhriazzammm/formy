@@ -1,7 +1,6 @@
 'use client';
 
 import { useFormStore } from '@/stores/useFormStore';
-import { Button } from '@/components/ui/button';
 import { 
   FileText, 
   CheckSquare, 
@@ -17,39 +16,35 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useState } from 'react';
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { cn } from '@/lib/utils';
 
 const componentGroups = [
   {
-    name: 'Basic Inputs',
+    name: 'Input Dasar',
+    color: 'blue',
     items: [
-      { type: 'text', icon: Type, label: 'Text Input' },
-      { type: 'number', icon: Hash, label: 'Number' },
-      { type: 'textarea', icon: AlignLeft, label: 'Text Area' },
+      { type: 'text', icon: Type, label: 'Input Teks', description: 'Field teks sederhana' },
+      { type: 'number', icon: Hash, label: 'Input Angka', description: 'Field untuk angka' },
+      { type: 'textarea', icon: AlignLeft, label: 'Area Teks', description: 'Teks multi-baris' },
     ]
   },
   {
-    name: 'Choice Inputs',
+    name: 'Pilihan',
+    color: 'green',
     items: [
-      { type: 'select', icon: ChevronDown, label: 'Dropdown' },
-      { type: 'radio', icon: Radio, label: 'Radio Group' },
-      { type: 'checkbox', icon: CheckSquare, label: 'Checkbox Group' },
-      { type: 'multiselect', icon: ListIcon, label: 'Multi Select' },
+      { type: 'select', icon: ChevronDown, label: 'Dropdown', description: 'Pilihan dari daftar' },
+      { type: 'radio', icon: Radio, label: 'Radio Button', description: 'Pilih satu opsi' },
+      { type: 'checkbox', icon: CheckSquare, label: 'Checkbox', description: 'Pilih beberapa opsi' },
+      { type: 'multiselect', icon: ListIcon, label: 'Multi Select', description: 'Pilihan berganda' },
     ]
   },
   {
-    name: 'Advanced Inputs',
+    name: 'Lanjutan',
+    color: 'purple',
     items: [
-      { type: 'date', icon: Calendar, label: 'Date Picker' },
-      { type: 'file', icon: FileImage, label: 'File Upload' },
-      { type: 'rich-text', icon: FileText, label: 'Rich Text' },
-      { type: 'conditional', icon: Check, label: 'Conditional' },
+      { type: 'date', icon: Calendar, label: 'Date Picker', description: 'Pilih tanggal' },
+      { type: 'file', icon: FileImage, label: 'Upload File', description: 'Upload dokumen/gambar' },
+      { type: 'rich-text', icon: FileText, label: 'Rich Text', description: 'Editor teks kaya' },
+      { type: 'conditional', icon: Check, label: 'Kondisional', description: 'Field berdasarkan kondisi' },
     ]
   }
 ];
@@ -60,7 +55,7 @@ interface FormComponentPaletteProps {
 
 export default function FormComponentPalette({ collapsed = false }: FormComponentPaletteProps) {
   const addComponent = useFormStore(s => s.addComponent);
-  const [expandedGroup, setExpandedGroup] = useState<string>('Basic Inputs');
+  const [expandedGroup, setExpandedGroup] = useState<string>('Input Dasar');
   
   const handleDragStart = (e: React.DragEvent, type: string) => {
     e.dataTransfer.setData('componentType', type);
@@ -71,97 +66,120 @@ export default function FormComponentPalette({ collapsed = false }: FormComponen
     addComponent(type);
   };
 
+  const getColorClasses = (color: string) => {
+    const colors = {
+      blue: 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700',
+      green: 'from-green-500 to-green-600 hover:from-green-600 hover:to-green-700',
+      purple: 'from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
+    };
+    return colors[color as keyof typeof colors] || colors.blue;
+  };
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {collapsed ? (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {componentGroups.map((group) => (
             <div key={group.name} className="relative group">
-              <div className="absolute left-full ml-2 invisible group-hover:visible bg-background border border-border rounded-lg p-2 shadow-lg z-50 w-48">
-                <div className="text-sm font-medium mb-2">{group.name}</div>
-                <div className="space-y-1">
+              <div className="absolute left-full ml-3 invisible group-hover:visible bg-white/95 backdrop-blur-sm border border-slate-200/60 rounded-xl p-4 shadow-xl z-50 w-64 transition-all duration-200">
+                <div className="text-sm font-cal font-semibold text-slate-800 mb-3">{group.name}</div>
+                <div className="space-y-2">
                   {group.items.map((item) => {
                     const ItemIcon = item.icon;
                     return (
-                      <Button
+                      <div
                         key={item.type}
-                        variant="ghost"
-                        className="w-full justify-start text-sm"
+                        className="p-3 bg-slate-50/50 rounded-lg border border-slate-100 hover:bg-white hover:shadow-sm transition-all cursor-pointer"
                         onClick={() => handleClick(item.type)}
                         draggable
                         onDragStart={(e) => handleDragStart(e, item.type)}
                       >
-                        <ItemIcon className="w-4 h-4 mr-2" />
-                        {item.label}
-                      </Button>
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${getColorClasses(group.color)} flex items-center justify-center`}>
+                            <ItemIcon className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-sm font-medium text-slate-700">{item.label}</div>
+                            <div className="text-xs text-slate-500">{item.description}</div>
+                          </div>
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                className="w-full p-2 h-auto"
+              <div
+                className={`w-12 h-12 rounded-xl bg-gradient-to-r ${getColorClasses(group.color)} flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer hover:scale-105`}
                 title={group.name}
               >
-                <div className="flex flex-col items-center gap-1">
-                  {(() => {
-                    const FirstIcon = group.items[0].icon;
-                    return <FirstIcon className="w-5 h-5" />;
-                  })()}
-                </div>
-              </Button>
+                {(() => {
+                  const FirstIcon = group.items[0].icon;
+                  return <FirstIcon className="w-6 h-6 text-white" />;
+                })()}
+              </div>
             </div>
           ))}
         </div>
       ) : (
-        <Accordion
-          type="single"
-          collapsible
-          value={expandedGroup}
-          onValueChange={setExpandedGroup}
-          className="space-y-2"
-        >
-          {componentGroups.map((group) => (
-            <AccordionItem
-              key={group.name}
-              value={group.name}
-              className="border border-border rounded-lg overflow-hidden"
-            >
-              <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/50">
-                <div className="flex items-center gap-2 text-sm font-medium">
-                  <ChevronRight className="w-4 h-4 transition-transform duration-200" />
-                  {group.name}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="p-2 grid grid-cols-1 gap-1">
-                  {group.items.map((item) => {
-                    const ItemIcon = item.icon;
-                    return (
-                      <Button
-                        key={item.type}
-                        variant="ghost"
-                        className={cn(
-                          "w-full justify-start text-sm",
-                          "hover:bg-primary/5 hover:text-primary",
-                          "active:scale-95 transition-transform",
-                          "cursor-grab active:cursor-grabbing"
-                        )}
-                        onClick={() => handleClick(item.type)}
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, item.type)}
-                      >
-                        <ItemIcon className="w-4 h-4 mr-2" />
-                        {item.label}
-                      </Button>
-                    );
-                  })}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <div className="space-y-3">
+          {componentGroups.map((group) => {
+            const isExpanded = expandedGroup === group.name;
+            return (
+              <div
+                key={group.name}
+                className="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
+              >
+                <button
+                  onClick={() => setExpandedGroup(isExpanded ? '' : group.name)}
+                  className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${getColorClasses(group.color)} flex items-center justify-center`}>
+                      {(() => {
+                        const FirstIcon = group.items[0].icon;
+                        return <FirstIcon className="w-4 h-4 text-white" />;
+                      })()}
+                    </div>
+                    <span className="text-sm font-cal font-semibold text-slate-800">{group.name}</span>
+                  </div>
+                  <ChevronRight 
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
+                      isExpanded ? 'rotate-90' : ''
+                    }`} 
+                  />
+                </button>
+                
+                {isExpanded && (
+                  <div className="px-4 pb-4 space-y-2">
+                    {group.items.map((item) => {
+                      const ItemIcon = item.icon;
+                      return (
+                        <div
+                          key={item.type}
+                          className="p-3 bg-slate-50/50 rounded-lg border border-slate-100 hover:bg-white hover:shadow-sm transition-all cursor-grab active:cursor-grabbing hover:scale-[1.02] active:scale-95"
+                          onClick={() => handleClick(item.type)}
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, item.type)}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${getColorClasses(group.color)} flex items-center justify-center`}>
+                              <ItemIcon className="w-4 h-4 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-sm font-medium text-slate-700">{item.label}</div>
+                              <div className="text-xs text-slate-500">{item.description}</div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );
-} 
+}

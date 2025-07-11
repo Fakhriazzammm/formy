@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 export async function GET() {
   try {
-    const token = cookies().get('auth-token');
+    const token = (await cookies()).get('auth-token');
 
     if (!token) {
       return new NextResponse(null, { status: 401 });
@@ -20,4 +20,4 @@ export async function GET() {
     console.error('Auth check error:', error);
     return new NextResponse(null, { status: 401 });
   }
-} 
+}

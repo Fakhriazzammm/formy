@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 
+// Check if we're in development mode
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 // Define protected routes that require authentication
 const protectedRoutes = [
   '/dashboard',
@@ -43,6 +46,11 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
   
+  // In development mode, allow access to all routes without authentication
+  if (isDevelopment) {
+    return NextResponse.next();
+  }
+  
   // Redirect to login if trying to access protected route without auth
   if (isProtectedRoute && !isAuthenticated) {
     const loginUrl = new URL('/login', request.url);
@@ -69,4 +77,4 @@ export const config = {
      */
     '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
   ],
-}; 
+};

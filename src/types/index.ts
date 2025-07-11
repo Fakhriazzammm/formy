@@ -44,10 +44,23 @@ export type FormFieldType =
 export interface FormField {
   id: string;
   type: FormFieldType;
+  name?: string;
   label: string;
   placeholder?: string;
+  helpText?: string;
   required: boolean;
   options?: string[];
+  defaultValue?: string | number;
+  value?: string | number;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  className?: string;
+  hidden?: boolean;
+  disabled?: boolean;
   validation?: {
     min?: number;
     max?: number;
@@ -188,4 +201,4 @@ export interface LinkAnalytics {
     views: number;
     submissions: number;
   }[];
-} 
+}

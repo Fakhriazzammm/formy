@@ -1,4 +1,4 @@
-# FormGen AI 🚀
+# Formy AI 🚀
 
 Platform SaaS yang memungkinkan pengguna membuat form kustom dengan bantuan AI, terintegrasi langsung ke spreadsheet, dan monetisasi berbasis pay-per-link (Rp 5.000/link, aktif 7 hari).
 
@@ -44,7 +44,7 @@ Platform SaaS yang memungkinkan pengguna membuat form kustom dengan bantuan AI, 
 - **Authentication**: Supabase Auth
 - **Database**: Supabase PostgreSQL
 - **File Storage**: Supabase Storage
-- **AI Integration**: OpenAI/Gemini API
+- **AI Integration**: Gemini API
 - **Payment**: Midtrans API
 - **Email**: Resend API
 

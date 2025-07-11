@@ -19,24 +19,23 @@ export default function FormComponentProperties({ activeComponentId }: FormCompo
   if (!activeComponent) {
     return (
       <div className="flex flex-col items-center justify-center h-[400px] text-center p-6">
-        <AlertCircle className="w-12 h-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-medium mb-2">No Component Selected</h3>
-        <p className="text-sm text-muted-foreground">
-          Select a component from the preview area to edit its properties
+        <div className="w-16 h-16 bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center mb-4">
+          <AlertCircle className="w-8 h-8 text-slate-400" />
+        </div>
+        <h3 className="text-lg font-cal font-semibold text-slate-800 mb-2">Pilih Komponen</h3>
+        <p className="text-sm text-slate-500 max-w-xs">
+          Klik komponen di area preview untuk mengedit propertinya
         </p>
       </div>
     );
   }
 
   const handleChange = (key: string, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-    updateComponent(activeComponent.id, { ...activeComponent, [key]: value });
+    updateComponent(activeComponent.id, { [key]: value });
   };
 
   const handleDelete = () => {
-    const index = components.findIndex(c => c.id === activeComponent.id);
-    if (index !== -1) {
-      removeComponent(index);
-    }
+    removeComponent(activeComponent.id);
   };
 
   return (
@@ -49,197 +48,259 @@ export default function FormComponentProperties({ activeComponentId }: FormCompo
         className="space-y-6"
       >
         {/* Component Type Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-medium capitalize">{activeComponent.type}</h3>
-            <p className="text-sm text-muted-foreground">ID: {activeComponent.id}</p>
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 border border-slate-200/60">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">{activeComponent.type.charAt(0).toUpperCase()}</span>
+              </div>
+              <div>
+                <h3 className="text-lg font-cal font-semibold text-slate-800 capitalize">{activeComponent.type}</h3>
+                <p className="text-xs text-slate-500 font-jetbrains">ID: {activeComponent.id}</p>
+              </div>
+            </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDelete}
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg"
+            >
+              <Trash className="w-4 h-4 mr-2" />
+              Hapus Komponen
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDelete}
-            className="text-destructive hover:text-destructive hover:bg-destructive/5"
-          >
-            <Trash className="w-4 h-4" />
-          </Button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Basic Properties */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="label">Label</Label>
-              <Input
-                id="label"
-                value={activeComponent.label || ''}
-                onChange={(e) => handleChange('label', e.target.value)}
-                placeholder="Enter field label"
-              />
-            </div>
+          <div className="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-xl p-4">
+            <h4 className="text-sm font-cal font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              Properti Dasar
+            </h4>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="label" className="text-sm font-medium text-slate-700">Label</Label>
+                <Input
+                  id="label"
+                  value={activeComponent.props.label || ''}
+                  onChange={(e) => handleChange('label', e.target.value)}
+                  placeholder="Masukkan label field"
+                  className="bg-white border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 rounded-lg"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="name">Field Name</Label>
-              <Input
-                id="name"
-                value={activeComponent.name || ''}
-                onChange={(e) => handleChange('name', e.target.value)}
-                placeholder="Enter field name"
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-medium text-slate-700">Nama Field</Label>
+                <Input
+                  id="name"
+                  value={activeComponent.props.name || ''}
+                  onChange={(e) => handleChange('name', e.target.value)}
+                  placeholder="Masukkan nama field"
+                  className="bg-white border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 rounded-lg"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="placeholder">Placeholder</Label>
-              <Input
-                id="placeholder"
-                value={activeComponent.placeholder || ''}
-                onChange={(e) => handleChange('placeholder', e.target.value)}
-                placeholder="Enter placeholder text"
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="placeholder" className="text-sm font-medium text-slate-700">Placeholder</Label>
+                <Input
+                  id="placeholder"
+                  value={activeComponent.props.placeholder || ''}
+                  onChange={(e) => handleChange('placeholder', e.target.value)}
+                  placeholder="Masukkan teks placeholder"
+                  className="bg-white border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 rounded-lg"
+                />
+              </div>
 
-            {/* Help Text */}
-            <div className="space-y-2">
-              <Label htmlFor="helpText">Help Text</Label>
-              <Textarea
-                id="helpText"
-                value={activeComponent.helpText || ''}
-                onChange={(e) => handleChange('helpText', e.target.value)}
-                placeholder="Enter help text"
-                rows={2}
-              />
+              <div className="space-y-2">
+                <Label htmlFor="helpText" className="text-sm font-medium text-slate-700">Teks Bantuan</Label>
+                <Textarea
+                  id="helpText"
+                  value={activeComponent.props.helpText || ''}
+                  onChange={(e) => handleChange('helpText', e.target.value)}
+                  placeholder="Masukkan teks bantuan"
+                  rows={2}
+                  className="bg-white border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 rounded-lg resize-none"
+                />
+              </div>
             </div>
           </div>
 
           {/* Validation Properties */}
-          <div className="space-y-4 pt-4 border-t border-border">
-            <h4 className="text-sm font-medium">Validation</h4>
+          <div className="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-xl p-4">
+            <h4 className="text-sm font-cal font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              Validasi
+            </h4>
             
-            <div className="flex items-center justify-between">
-              <Label htmlFor="required">Required Field</Label>
+            <div className="flex items-center justify-between p-3 bg-slate-50/50 rounded-lg border border-slate-100">
+              <div>
+                <Label htmlFor="required" className="text-sm font-medium text-slate-700">Field Wajib</Label>
+                <p className="text-xs text-slate-500">Field ini harus diisi</p>
+              </div>
               <Switch
                 id="required"
-                checked={activeComponent.required || false}
+                checked={activeComponent.props.required || false}
                 onCheckedChange={(checked) => handleChange('required', checked)}
               />
             </div>
 
             {(activeComponent.type === 'text' || activeComponent.type === 'textarea') && (
-              <>
+              <div className="space-y-4 mt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="minLength">Minimum Length</Label>
+                  <Label htmlFor="minLength" className="text-sm font-medium text-slate-700">Panjang Minimum</Label>
                   <Input
                     id="minLength"
                     type="number"
-                    value={activeComponent.minLength || ''}
+                    value={activeComponent.props.minLength || ''}
                     onChange={(e) => handleChange('minLength', e.target.value)}
                     placeholder="0"
+                    className="bg-white border-slate-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 rounded-lg"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="maxLength">Maximum Length</Label>
+                  <Label htmlFor="maxLength" className="text-sm font-medium text-slate-700">Panjang Maksimum</Label>
                   <Input
                     id="maxLength"
                     type="number"
-                    value={activeComponent.maxLength || ''}
+                    value={activeComponent.props.maxLength || ''}
                     onChange={(e) => handleChange('maxLength', e.target.value)}
-                    placeholder="Unlimited"
+                    placeholder="Tidak terbatas"
+                    className="bg-white border-slate-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 rounded-lg"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="pattern">Validation Pattern</Label>
+                  <Label htmlFor="pattern" className="text-sm font-medium text-slate-700">Pola Validasi</Label>
                   <Select
-                    value={activeComponent.pattern || ''}
+                    value={activeComponent.props.pattern || ''}
                     onValueChange={(value) => handleChange('pattern', value)}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select pattern" />
+                    <SelectTrigger className="bg-white border-slate-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 rounded-lg">
+                      <SelectValue placeholder="Pilih pola validasi" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None</SelectItem>
+                      <SelectItem value="">Tidak ada</SelectItem>
                       <SelectItem value="email">Email</SelectItem>
                       <SelectItem value="url">URL</SelectItem>
-                      <SelectItem value="phone">Phone Number</SelectItem>
+                      <SelectItem value="phone">Nomor Telepon</SelectItem>
                       <SelectItem value="custom">Custom Regex</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              </>
+              </div>
             )}
 
             {activeComponent.type === 'number' && (
-              <>
+              <div className="space-y-4 mt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="min">Minimum Value</Label>
+                  <Label htmlFor="min" className="text-sm font-medium text-slate-700">Nilai Minimum</Label>
                   <Input
                     id="min"
                     type="number"
-                    value={activeComponent.min || ''}
+                    value={activeComponent.props.min || ''}
                     onChange={(e) => handleChange('min', e.target.value)}
-                    placeholder="No minimum"
+                    placeholder="Tidak ada minimum"
+                    className="bg-white border-slate-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 rounded-lg"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="max">Maximum Value</Label>
+                  <Label htmlFor="max" className="text-sm font-medium text-slate-700">Nilai Maksimum</Label>
                   <Input
                     id="max"
                     type="number"
-                    value={activeComponent.max || ''}
+                    value={activeComponent.props.max || ''}
                     onChange={(e) => handleChange('max', e.target.value)}
-                    placeholder="No maximum"
+                    placeholder="Tidak ada maksimum"
+                    className="bg-white border-slate-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 rounded-lg"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="step">Step</Label>
+                  <Label htmlFor="step" className="text-sm font-medium text-slate-700">Langkah</Label>
                   <Input
                     id="step"
                     type="number"
-                    value={activeComponent.step || ''}
+                    value={activeComponent.props.step || ''}
                     onChange={(e) => handleChange('step', e.target.value)}
                     placeholder="1"
+                    className="bg-white border-slate-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 rounded-lg"
                   />
                 </div>
-              </>
+              </div>
             )}
           </div>
 
+          {/* Type-specific Properties */}
+          {(activeComponent.type === 'dropdown' || activeComponent.type === 'radio' || activeComponent.type === 'checkbox' || activeComponent.type === 'multiselect') && (
+            <div className="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-xl p-4">
+              <h4 className="text-sm font-cal font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                Opsi Pilihan
+              </h4>
+              
+              <div className="space-y-2">
+                <Label htmlFor="options" className="text-sm font-medium text-slate-700">Opsi (satu per baris)</Label>
+                <Textarea
+                  id="options"
+                  value={(activeComponent.props.options || []).join('\n')}
+                  onChange={(e) => handleChange('options', e.target.value.split('\n').filter(Boolean))}
+                  placeholder="Opsi 1\nOpsi 2\nOpsi 3"
+                  rows={4}
+                  className="bg-white border-slate-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 rounded-lg resize-none"
+                />
+              </div>
+            </div>
+          )}
+
           {/* Appearance Properties */}
-          <div className="space-y-4 pt-4 border-t border-border">
-            <h4 className="text-sm font-medium">Appearance</h4>
+          <div className="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-xl p-4">
+            <h4 className="text-sm font-cal font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              Tampilan
+            </h4>
             
-            <div className="space-y-2">
-              <Label htmlFor="className">CSS Class</Label>
-              <Input
-                id="className"
-                value={activeComponent.className || ''}
-                onChange={(e) => handleChange('className', e.target.value)}
-                placeholder="Enter CSS classes"
-              />
-            </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="className" className="text-sm font-medium text-slate-700">CSS Class</Label>
+                <Input
+                  id="className"
+                  value={activeComponent.props.className || ''}
+                  onChange={(e) => handleChange('className', e.target.value)}
+                  placeholder="Masukkan CSS classes"
+                  className="bg-white border-slate-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 rounded-lg"
+                />
+              </div>
 
-            <div className="flex items-center justify-between">
-              <Label htmlFor="hidden">Hidden Field</Label>
-              <Switch
-                id="hidden"
-                checked={activeComponent.hidden || false}
-                onCheckedChange={(checked) => handleChange('hidden', checked)}
-              />
-            </div>
+              <div className="flex items-center justify-between p-3 bg-slate-50/50 rounded-lg border border-slate-100">
+                <div>
+                  <Label htmlFor="hidden" className="text-sm font-medium text-slate-700">Field Tersembunyi</Label>
+                  <p className="text-xs text-slate-500">Field tidak akan terlihat di form</p>
+                </div>
+                <Switch
+                  id="hidden"
+                  checked={activeComponent.props.hidden || false}
+                  onCheckedChange={(checked) => handleChange('hidden', checked)}
+                />
+              </div>
 
-            <div className="flex items-center justify-between">
-              <Label htmlFor="disabled">Disabled</Label>
-              <Switch
-                id="disabled"
-                checked={activeComponent.disabled || false}
-                onCheckedChange={(checked) => handleChange('disabled', checked)}
-              />
+              <div className="flex items-center justify-between p-3 bg-slate-50/50 rounded-lg border border-slate-100">
+                <div>
+                  <Label htmlFor="disabled" className="text-sm font-medium text-slate-700">Nonaktif</Label>
+                  <p className="text-xs text-slate-500">Field tidak dapat diisi</p>
+                </div>
+                <Switch
+                  id="disabled"
+                  checked={activeComponent.props.disabled || false}
+                  onCheckedChange={(checked) => handleChange('disabled', checked)}
+                />
+              </div>
             </div>
           </div>
         </div>
       </motion.div>
     </AnimatePresence>
   );
-} 
+}

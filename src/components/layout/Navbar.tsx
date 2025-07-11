@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function Navbar() {
+export default function Navbar({ showUserMenu = true }: { showUserMenu?: boolean } = {}) {
+  // Variabel showUserMenu digunakan untuk menentukan apakah menu pengguna ditampilkan
   return (
     <header className="w-full bg-[#5A4EFF] text-white">
       <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -27,18 +28,23 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/auth/login">
-            <button className="px-4 py-2 text-white opacity-90 hover:opacity-100">
-              Masuk
-            </button>
-          </Link>
-          <Link href="/auth/register">
-            <button className="px-4 py-2 bg-white text-[#5A4EFF] rounded-lg font-medium hover:bg-opacity-90">
-              Mulai Gratis
-            </button>
-          </Link>
+          {/* Tampilkan tombol login/register hanya jika showUserMenu true */}
+          {showUserMenu && (
+            <>
+              <Link href="/auth/login">
+                <button className="px-4 py-2 text-white opacity-90 hover:opacity-100">
+                  Masuk
+                </button>
+              </Link>
+              <Link href="/auth/register">
+                <button className="px-4 py-2 bg-white text-[#5A4EFF] rounded-lg font-medium hover:bg-opacity-90">
+                  Mulai Gratis
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>
   );
-} 
+}
