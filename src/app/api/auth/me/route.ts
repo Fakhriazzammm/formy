@@ -1,47 +1,23 @@
-export const runtime = "nodejs";
-import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken, getUserById } from '@/lib/auth';
+import { NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const token = request.cookies.get('auth-token')?.value;
-    
+    const token = cookies().get('auth-token');
+
     if (!token) {
-      return NextResponse.json(
-        { error: 'No authentication token' },
-        { status: 401 }
-      );
+      return new NextResponse(null, { status: 401 });
     }
 
-    const decoded = verifyToken(token);
-    
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      );
-    }
-
-    const user = await getUserById(decoded.userId);
-    
+    const user = verifyToken(token.value);
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return new NextResponse(null, { status: 401 });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: { user },
-      message: 'User retrieved successfully'
-    });
+    return NextResponse.json(user);
   } catch (error) {
     console.error('Auth check error:', error);
-    
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return new NextResponse(null, { status: 401 });
   }
 } 

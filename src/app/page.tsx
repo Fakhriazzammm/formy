@@ -1,319 +1,437 @@
+'use client';
+
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Bot, 
-  Sparkles, 
-  Database, 
-  CreditCard, 
-  Zap, 
-  BarChart3,
-  ArrowRight,
-  Check
-} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function HomePage() {
+  const router = useRouter();
+  const [prompt, setPrompt] = useState('');
+
+  const handleAIGenerate = async (predefinedPrompt?: string) => {
+    const promptToUse = predefinedPrompt || prompt;
+    if (!promptToUse) return;
+
+    try {
+      // Redirect ke halaman builder dengan prompt sebagai parameter
+      router.push(`/builder?prompt=${encodeURIComponent(promptToUse)}`);
+    } catch (error) {
+      console.error('Error generating form:', error);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              FormGen AI
-            </span>
-          </div>
-          
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
-              Fitur
-            </Link>
-            <Link href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">
-              Harga
-            </Link>
-            <Link href="#demo" className="text-gray-600 hover:text-gray-900 transition-colors">
-              Demo
-            </Link>
-          </nav>
-          
-          <div className="flex items-center space-x-3">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Masuk</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/register">Daftar Gratis</Link>
-            </Button>
+    <main className="flex flex-col min-h-screen">
+      {/* Hero Section */}
+      <section className="w-full py-24 bg-white">
+        <div className="max-w-4xl mx-auto text-center px-4">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
+            Buat Form Kustom dengan AI - Gratis! 📝
+          </h1>
+          <p className="text-xl md:text-2xl mb-12 text-gray-700">
+            Bayar hanya Rp 5.000 ketika siap share 🚀
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="px-6 py-3 bg-[#5A4EFF] text-white rounded-lg font-medium hover:bg-opacity-90 transition-all">
+              Mulai Buat Form Gratis
+            </button>
+            <button className="px-6 py-3 bg-[#E2F4A6] text-gray-900 rounded-lg font-medium hover:bg-opacity-90 transition-all">
+              Lihat Demo
+            </button>
           </div>
         </div>
-      </header>
+      </section>
 
-      {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <Badge variant="secondary" className="mb-4">
-            <Sparkles className="w-4 h-4 mr-2" />
-            Powered by AI
-          </Badge>
-          
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-            Buat Form Kustom dengan AI
-            <br />
-            <span className="text-blue-600">Gratis! 📝</span>
-          </h1>
-          
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Platform SaaS yang memungkinkan Anda membuat form kustom dengan bantuan AI, 
-            terintegrasi langsung ke spreadsheet. Bayar hanya Rp 5.000 ketika siap share! 🚀
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="text-lg px-8" asChild>
-              <Link href="/dashboard">
-                Mulai Gratis Sekarang
-                <ArrowRight className="w-5 h-5 ml-2" />
+      {/* Interactive Features Demo Section */}
+      <section className="w-full py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-16 text-gray-900">
+            Coba Fitur Utama
+          </h2>
+
+          <Tabs defaultValue="ai" className="w-full mb-16">
+            <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsTrigger 
+                value="ai"
+                className="text-gray-700 data-[state=active]:bg-[#5A4EFF] data-[state=active]:text-white"
+              >
+                🤖 Generate dengan AI
+              </TabsTrigger>
+              <TabsTrigger 
+                value="manual"
+                className="text-gray-700 data-[state=active]:bg-[#EEA0FF] data-[state=active]:text-white"
+              >
+                🎨 Form Builder Manual
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="ai" className="mt-0">
+              <div className="rounded-3xl bg-white p-8 shadow-lg border border-[#5A4EFF]/10">
+                <h3 className="text-2xl font-bold mb-6 text-gray-900">
+                  Chat dengan AI untuk Generate Form
+                </h3>
+                <div className="bg-gray-50 rounded-xl p-6 mb-6">
+                  <p className="text-gray-700 mb-4">Contoh prompt yang bisa Anda gunakan:</p>
+                  <div className="space-y-3">
+                    <div 
+                      onClick={() => handleAIGenerate("Buat form pendaftaran event dengan upload foto")}
+                      className="bg-white p-4 rounded-lg border border-[#5A4EFF]/20 hover:border-[#5A4EFF]/40 transition-colors cursor-pointer text-gray-800"
+                    >
+                      &ldquo;Buat form pendaftaran event dengan upload foto&rdquo;
+                    </div>
+                    <div 
+                      onClick={() => handleAIGenerate("Form survei kepuasan pelanggan dengan rating dan feedback")}
+                      className="bg-white p-4 rounded-lg border border-[#5A4EFF]/20 hover:border-[#5A4EFF]/40 transition-colors cursor-pointer text-gray-800"
+                    >
+                      &ldquo;Form survei kepuasan pelanggan dengan rating dan feedback&rdquo;
+                    </div>
+                    <div 
+                      onClick={() => handleAIGenerate("Form lamaran kerja dengan CV upload dan data pribadi")}
+                      className="bg-white p-4 rounded-lg border border-[#5A4EFF]/20 hover:border-[#5A4EFF]/40 transition-colors cursor-pointer text-gray-800"
+                    >
+                      &ldquo;Form lamaran kerja dengan CV upload dan data pribadi&rdquo;
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-4 mb-6">
+                  <input
+                    type="text"
+                    placeholder="Ketik prompt Anda di sini..."
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-[#5A4EFF]"
+                  />
+                  <button
+                    onClick={() => handleAIGenerate()}
+                    className="w-full px-6 py-3 bg-[#5A4EFF] text-white rounded-lg font-medium hover:bg-opacity-90 transition-all"
+                  >
+                    Generate Form dengan AI
+                  </button>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link 
+                    href="/builder" 
+                    className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-all"
+                  >
+                    Lihat Dokumentasi
+                  </Link>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="manual" className="mt-0">
+              <div className="rounded-3xl bg-white p-8 shadow-lg border border-[#EEA0FF]/10">
+                <h3 className="text-2xl font-bold mb-6 text-gray-900">
+                  Drag & Drop Form Builder
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                  <div className="bg-gray-50 rounded-xl p-6">
+                    <p className="text-gray-700 mb-4">Komponen Form:</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-white p-4 rounded-lg border border-[#EEA0FF]/20 hover:border-[#EEA0FF]/40 transition-colors cursor-move flex items-center gap-2 text-gray-800">
+                        <span>📝</span> Text Input
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-[#EEA0FF]/20 hover:border-[#EEA0FF]/40 transition-colors cursor-move flex items-center gap-2 text-gray-800">
+                        <span>📋</span> Text Area
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-[#EEA0FF]/20 hover:border-[#EEA0FF]/40 transition-colors cursor-move flex items-center gap-2 text-gray-800">
+                        <span>📅</span> Date Picker
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-[#EEA0FF]/20 hover:border-[#EEA0FF]/40 transition-colors cursor-move flex items-center gap-2 text-gray-800">
+                        <span>📎</span> File Upload
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-6">
+                    <p className="text-gray-700 mb-4">Validasi & Logika:</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-white p-4 rounded-lg border border-[#EEA0FF]/20 hover:border-[#EEA0FF]/40 transition-colors cursor-move flex items-center gap-2 text-gray-800">
+                        <span>✅</span> Required
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-[#EEA0FF]/20 hover:border-[#EEA0FF]/40 transition-colors cursor-move flex items-center gap-2 text-gray-800">
+                        <span>🔄</span> Conditional
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-[#EEA0FF]/20 hover:border-[#EEA0FF]/40 transition-colors cursor-move flex items-center gap-2 text-gray-800">
+                        <span>📏</span> Min/Max
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-[#EEA0FF]/20 hover:border-[#EEA0FF]/40 transition-colors cursor-move flex items-center gap-2 text-gray-800">
+                        <span>🔍</span> Pattern
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link 
+                    href="/builder" 
+                    className="inline-flex items-center justify-center px-6 py-3 bg-[#EEA0FF] text-white rounded-lg font-medium hover:bg-opacity-90 transition-all"
+                  >
+                    Buka Form Builder
+                  </Link>
+                  <Link 
+                    href="/templates" 
+                    className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-all"
+                  >
+                    Lihat Template
+                  </Link>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          {/* Additional Features */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Theme Generator */}
+            <div className="rounded-3xl bg-white p-8 shadow-lg">
+              <h3 className="text-xl font-bold mb-4 text-gray-900">
+                🎨 Theme Generator
+              </h3>
+              <div className="space-y-3 mb-6">
+                <div className="h-8 bg-[#5A4EFF] rounded-lg"></div>
+                <div className="h-8 bg-[#EEA0FF] rounded-lg"></div>
+                <div className="h-8 bg-[#E2F4A6] rounded-lg"></div>
+              </div>
+              <p className="text-gray-700 mb-4">Generate tema otomatis sesuai industri dan brand Anda</p>
+              <Link href="/builder" className="text-gray-900 font-medium hover:text-[#5A4EFF] transition-colors">
+                Coba Theme Generator →
               </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8">
-              Lihat Demo
-            </Button>
-          </div>
-          
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">100%</div>
-              <div className="text-gray-600">Gratis Membuat Form</div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">Rp 5.000</div>
-              <div className="text-gray-600">Per Link (7 Hari)</div>
+
+            {/* Spreadsheet Integration */}
+            <div className="rounded-3xl bg-white p-8 shadow-lg">
+              <h3 className="text-xl font-bold mb-4 text-gray-900">
+                📊 Spreadsheet Sync
+              </h3>
+              <div className="space-y-3 mb-6">
+                <div className="h-8 bg-green-500 rounded-lg"></div>
+                <div className="h-8 bg-blue-500 rounded-lg"></div>
+                <div className="h-8 bg-yellow-500 rounded-lg"></div>
+              </div>
+              <p className="text-gray-700 mb-4">Integrasi langsung dengan Google Sheets untuk menyimpan data</p>
+              <Link href="/builder" className="text-gray-900 font-medium hover:text-[#5A4EFF] transition-colors">
+                Coba Spreadsheet Sync →
+              </Link>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">AI</div>
-              <div className="text-gray-600">Powered Builder</div>
+
+            {/* Pay-per-Share */}
+            <div className="rounded-3xl bg-white p-8 shadow-lg">
+              <h3 className="text-xl font-bold mb-4 text-gray-900">
+                💰 Pay-per-Share
+              </h3>
+              <div className="space-y-3 mb-6">
+                <div className="h-8 bg-[#5A4EFF] rounded-lg"></div>
+                <div className="h-8 bg-[#EEA0FF] rounded-lg"></div>
+                <div className="h-8 bg-[#E2F4A6] rounded-lg"></div>
+              </div>
+              <p className="text-gray-700 mb-4">Bayar hanya Rp 5.000 per link aktif selama 7 hari</p>
+              <Link href="/builder" className="text-gray-900 font-medium hover:text-[#5A4EFF] transition-colors">
+                Coba Pay-per-Share →
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 bg-white">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Fitur Unggulan FormGen AI
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Semua yang Anda butuhkan untuk membuat form profesional dengan mudah
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Bot className="w-6 h-6 text-blue-600" />
-                </div>
-                <CardTitle>AI Form Builder</CardTitle>
-                <CardDescription>
-                  Deskripsikan kebutuhan form Anda, AI akan membuatkan form lengkap secara otomatis
-                </CardDescription>
-              </CardHeader>
-            </Card>
+      <section className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-16 text-gray-900">
+            Fitur Utama
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* AI Form Builder Card */}
+            <div className="rounded-3xl bg-[#5A4EFF] p-8 text-white hover:transform hover:-translate-y-1 transition-all">
+              <div className="text-3xl mb-6">🤖</div>
+              <h3 className="font-bold text-xl mb-3">AI Form Builder</h3>
+              <p className="text-white/90">Buat form dengan bahasa natural melalui chat interface AI</p>
+            </div>
+            
+            {/* Theme Generator Card */}
+            <div className="rounded-3xl bg-[#E2F4A6] p-8 text-gray-900 hover:transform hover:-translate-y-1 transition-all">
+              <div className="text-3xl mb-6">🎨</div>
+              <h3 className="font-bold text-xl mb-3">Theme Generator</h3>
+              <p className="text-gray-800">Generate tema otomatis sesuai industri dan brand Anda</p>
+            </div>
 
-            {/* Feature 2 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                  <Database className="w-6 h-6 text-green-600" />
-                </div>
-                <CardTitle>Integrasi Spreadsheet</CardTitle>
-                <CardDescription>
-                  Sinkronisasi real-time dengan Google Sheets, Excel Online, dan Airtable
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            {/* Spreadsheet Sync Card */}
+            <div className="rounded-3xl bg-[#EEA0FF] p-8 text-white hover:transform hover:-translate-y-1 transition-all">
+              <div className="text-3xl mb-6">📊</div>
+              <h3 className="font-bold text-xl mb-3">Spreadsheet Sync</h3>
+              <p className="text-white/90">Integrasi langsung dengan Google Sheets</p>
+            </div>
 
-            {/* Feature 3 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                  <Sparkles className="w-6 h-6 text-purple-600" />
-                </div>
-                <CardTitle>Theme Generator</CardTitle>
-                <CardDescription>
-                  AI-powered themes yang disesuaikan dengan industri dan kebutuhan Anda
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            {/* Feature 4 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
-                  <CreditCard className="w-6 h-6 text-yellow-600" />
-                </div>
-                <CardTitle>Pay-per-Share</CardTitle>
-                <CardDescription>
-                  Bayar hanya ketika siap share link. Rp 5.000 untuk link aktif 7 hari
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            {/* Feature 5 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-red-600" />
-                </div>
-                <CardTitle>Form Dinamis</CardTitle>
-                <CardDescription>
-                  Conditional logic, validasi real-time, dan berbagai jenis input field
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            {/* Feature 6 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mb-4">
-                  <BarChart3 className="w-6 h-6 text-cyan-600" />
-                </div>
-                <CardTitle>Analytics</CardTitle>
-                <CardDescription>
-                  Pantau performa form dengan analytics lengkap dan insights mendalam
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            {/* Pay-per-Share Card */}
+            <div className="rounded-3xl bg-[#F5F5F5] p-8 text-gray-900 hover:transform hover:-translate-y-1 transition-all">
+              <div className="text-3xl mb-6">💰</div>
+              <h3 className="font-bold text-xl mb-3">Pay-per-Share</h3>
+              <p className="text-gray-800">Rp 5.000 per link aktif selama 7 hari</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Harga yang Sederhana & Transparan
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Tidak ada biaya tersembunyi. Bayar hanya ketika siap share form Anda
-            </p>
+      {/* How It Works */}
+      <section className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-16 text-gray-900">
+            Cara Kerja
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Step 1 */}
+            <div className="rounded-3xl bg-[#5A4EFF] p-8 text-white hover:transform hover:-translate-y-1 transition-all">
+              <div className="inline-block px-3 py-1 rounded-lg bg-white/20 text-sm mb-6">1</div>
+              <h3 className="font-bold text-xl mb-3">Buat Form</h3>
+              <p className="text-white/90">Gunakan AI chat untuk mendeskripsikan form yang Anda inginkan</p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="rounded-3xl bg-[#E2F4A6] p-8 text-gray-900 hover:transform hover:-translate-y-1 transition-all">
+              <div className="inline-block px-3 py-1 rounded-lg bg-black/10 text-sm mb-6">2</div>
+              <h3 className="font-bold text-xl mb-3">Kustomisasi</h3>
+              <p className="text-gray-800">Edit tema dan field sesuai kebutuhan dengan drag & drop</p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="rounded-3xl bg-[#EEA0FF] p-8 text-white hover:transform hover:-translate-y-1 transition-all">
+              <div className="inline-block px-3 py-1 rounded-lg bg-white/20 text-sm mb-6">3</div>
+              <h3 className="font-bold text-xl mb-3">Share</h3>
+              <p className="text-white/90">Bayar Rp 5.000 untuk mendapatkan link aktif 7 hari</p>
+            </div>
           </div>
-          
-          <div className="max-w-md mx-auto">
-            <Card className="border-2 border-blue-200 shadow-xl">
-              <CardHeader className="text-center pb-2">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CreditCard className="w-8 h-8 text-white" />
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-16 text-gray-900">
+            Testimoni Pengguna
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Testimonial 1 */}
+            <div className="rounded-3xl bg-[#5A4EFF] p-8 text-white">
+              <div className="flex items-center gap-1 mb-4">
+                {"★★★★★".split("").map((star, i) => (
+                  <span key={i} className="text-yellow-400">{star}</span>
+                ))}
+              </div>
+              <p className="italic mb-6 text-white/90">&ldquo;Form AI membantu saya bisa membuat form survey dengan cepat dan hasilnya langsung tersimpan di Google Sheets loh saya.&rdquo;</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20"></div>
+                <div>
+                  <p className="font-medium">Andi Pratama</p>
+                  <p className="text-sm text-white/80">Marketing Manager</p>
                 </div>
-                <CardTitle className="text-2xl">Pay-per-Share</CardTitle>
-                <CardDescription>
-                  Model pembayaran yang fleksibel dan terjangkau
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="text-center mb-6">
-                  <div className="text-4xl font-bold text-blue-600 mb-2">Rp 5.000</div>
-                  <div className="text-gray-600">per link aktif 7 hari</div>
+              </div>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="rounded-3xl bg-[#EEA0FF] p-8 text-white">
+              <div className="flex items-center gap-1 mb-4">
+                {"★★★★★".split("").map((star, i) => (
+                  <span key={i} className="text-yellow-400">{star}</span>
+                ))}
+              </div>
+              <p className="italic mb-6 text-white/90">&ldquo;Fitur pay-per-link sangat cocok untuk bisnis kami yang hanya butuh form untuk event tertentu.&rdquo;</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20"></div>
+                <div>
+                  <p className="font-medium">Siti Nurhailza</p>
+                  <p className="text-sm text-white/80">Event Organizer</p>
                 </div>
-                
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span>Buat form unlimited - GRATIS</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span>Preview dan test form - GRATIS</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span>AI form builder & theme generator</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span>Integrasi spreadsheet real-time</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span>Analytics dan insights</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span>Custom domain slug</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3" />
-                    <span>Extend link yang expired</span>
-                  </li>
-                </ul>
-                
-                <Button className="w-full" size="lg" asChild>
-                  <Link href="/dashboard">
-                    Mulai Sekarang - Gratis!
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="rounded-3xl bg-[#5A4EFF] p-8 text-white">
+              <div className="flex items-center gap-1 mb-4">
+                {"★★★★★".split("").map((star, i) => (
+                  <span key={i} className="text-yellow-400">{star}</span>
+                ))}
+              </div>
+              <p className="italic mb-6 text-white/90">&ldquo;UI-nya sangat mudah dipahami, dan bantuan AI membantu kami membuat form rekrutmen yang profesional.&rdquo;</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20"></div>
+                <div>
+                  <p className="font-medium">Budi Santoso</p>
+                  <p className="text-sm text-white/80">HR Specialist</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto text-center px-4">
+          <h2 className="text-3xl font-bold mb-6 text-gray-900">
+            Siap untuk membuat form kustom Anda?
+          </h2>
+          <p className="text-xl mb-12 text-gray-700">
+            Mulai gunakan Formy sekarang dan rasakan kemudahan membuat form dengan bantuan AI
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="px-6 py-3 bg-[#5A4EFF] text-white rounded-lg font-medium hover:bg-opacity-90 transition-all">
+              Mulai Gratis
+            </button>
+            <button className="px-6 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium hover:bg-gray-200 transition-all">
+              Pelajari Lebih Lanjut
+            </button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="bg-gray-50 py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl font-bold">FormGen AI</span>
-              </div>
-              <p className="text-gray-400">
-                Platform SaaS untuk membuat form kustom dengan AI
+              <h3 className="font-bold text-lg mb-4 text-gray-900">Formy AI</h3>
+              <p className="text-gray-700 text-sm">
+                Platform SaaS untuk membuat form kustom dengan bantuan AI, terintegrasi dengan spreadsheet.
               </p>
             </div>
-            
             <div>
-              <h4 className="font-semibold mb-4">Produk</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/features" className="hover:text-white transition-colors">Fitur</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Harga</Link></li>
-                <li><Link href="/templates" className="hover:text-white transition-colors">Template</Link></li>
+              <h4 className="font-bold mb-4 text-gray-900">Produk</h4>
+              <ul className="space-y-2">
+                <li><Link href="/builder" className="text-gray-700 hover:text-gray-900">Form Builder</Link></li>
+                <li><Link href="/ai" className="text-gray-700 hover:text-gray-900">AI Assistant</Link></li>
+                <li><Link href="/integration" className="text-gray-700 hover:text-gray-900">Spreadsheet Integration</Link></li>
+                <li><Link href="/api" className="text-gray-700 hover:text-gray-900">API</Link></li>
               </ul>
             </div>
-            
             <div>
-              <h4 className="font-semibold mb-4">Perusahaan</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/about" className="hover:text-white transition-colors">Tentang</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Kontak</Link></li>
-                <li><Link href="/privacy" className="hover:text-white transition-colors">Privasi</Link></li>
+              <h4 className="font-bold mb-4 text-gray-900">Perusahaan</h4>
+              <ul className="space-y-2">
+                <li><Link href="/about" className="text-gray-700 hover:text-gray-900">Tentang Kami</Link></li>
+                <li><Link href="/blog" className="text-gray-700 hover:text-gray-900">Blog</Link></li>
+                <li><Link href="/careers" className="text-gray-700 hover:text-gray-900">Karir</Link></li>
+                <li><Link href="/contact" className="text-gray-700 hover:text-gray-900">Hubungi Kami</Link></li>
               </ul>
             </div>
-            
             <div>
-              <h4 className="font-semibold mb-4">Dukungan</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/help" className="hover:text-white transition-colors">Bantuan</Link></li>
-                <li><Link href="/docs" className="hover:text-white transition-colors">Dokumentasi</Link></li>
-                <li><Link href="/support" className="hover:text-white transition-colors">Support</Link></li>
+              <h4 className="font-bold mb-4 text-gray-900">Bantuan</h4>
+              <ul className="space-y-2">
+                <li><Link href="/docs" className="text-gray-700 hover:text-gray-900">Dokumentasi</Link></li>
+                <li><Link href="/tutorial" className="text-gray-700 hover:text-gray-900">Tutorial</Link></li>
+                <li><Link href="/faq" className="text-gray-700 hover:text-gray-900">FAQ</Link></li>
+                <li><Link href="/status" className="text-gray-700 hover:text-gray-900">Status</Link></li>
               </ul>
             </div>
           </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 FormGen AI. Developed by Zantara Technology. All rights reserved.</p>
+          <div className="mt-12 pt-8 border-t border-gray-200">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-sm text-gray-700">© 2024 Formy AI. All rights reserved.</p>
+              <div className="flex gap-6 text-sm text-gray-700">
+                <Link href="/privacy" className="hover:text-gray-900">Kebijakan Privasi</Link>
+                <Link href="/terms" className="hover:text-gray-900">Syarat & Ketentuan</Link>
+                <Link href="/cookies" className="hover:text-gray-900">Kebijakan Cookie</Link>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }

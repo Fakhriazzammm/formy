@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import Navbar from '@/components/layout/Navbar';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,16 +23,16 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'FormGen AI - Buat Form Kustom dengan AI',
+    title: 'Formy AI - Buat Form Kustom dengan AI',
     description: 'Platform SaaS untuk membuat form kustom dengan bantuan AI, terintegrasi dengan spreadsheet.',
-    url: 'https://formgen.ai',
-    siteName: 'FormGen AI',
+    url: 'https://formy.com',
+    siteName: 'Formy AI',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'FormGen AI - AI-Powered Form Builder',
+        alt: 'Formy AI - AI-Powered Form Builder',
       },
     ],
     locale: 'id_ID',
@@ -38,7 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FormGen AI - Buat Form Kustom dengan AI',
+    title: 'Formy AI - Buat Form Kustom dengan AI',
     description: 'Platform SaaS untuk membuat form kustom dengan bantuan AI, terintegrasi dengan spreadsheet.',
     images: ['/og-image.png'],
     creator: '@formgenai',
@@ -62,9 +64,73 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={inter.className}>
-      <body className="antialiased">
-        {children}
+    <html lang="id" className={`${inter.className} scroll-smooth`}>
+      <body className="antialiased min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+        <Navbar showUserMenu={false} />
+        <div className="pt-16">
+          {children}
+        </div>
+        <Toaster position="bottom-right" />
+        
+        {/* Cursor effect for better UX */}
+        <div id="cursor-fx" className="hidden md:block">
+          <script dangerouslySetInnerHTML={{
+            __html: `
+              document.addEventListener('DOMContentLoaded', function() {
+                const cursor = document.createElement('div');
+                cursor.classList.add('cursor-fx');
+                document.body.appendChild(cursor);
+                
+                document.addEventListener('mousemove', function(e) {
+                  cursor.style.cssText = 'transform: translate3d(' + e.clientX + 'px, ' + e.clientY + 'px, 0) scale(1);';
+                });
+                
+                document.addEventListener('mousedown', function() {
+                  cursor.classList.add('cursor-fx-active');
+                });
+                
+                document.addEventListener('mouseup', function() {
+                  cursor.classList.remove('cursor-fx-active');
+                });
+                
+                // Detect hoverable elements
+                document.querySelectorAll('a, button, input, select, textarea, [role="button"]').forEach(el => {
+                  el.addEventListener('mouseenter', function() {
+                    cursor.classList.add('cursor-fx-hover');
+                  });
+                  
+                  el.addEventListener('mouseleave', function() {
+                    cursor.classList.remove('cursor-fx-hover');
+                  });
+                });
+                
+                // Hide cursor when leaving window
+                document.addEventListener('mouseleave', function() {
+                  cursor.style.opacity = '0';
+                });
+                
+                document.addEventListener('mouseenter', function() {
+                  cursor.style.opacity = '1';
+                });
+                
+                // Use rAF for smooth animation
+                let requestId;
+                function loop() {
+                  const targetX = window.mouseX || 0;
+                  const targetY = window.mouseY || 0;
+                  requestId = requestAnimationFrame(loop);
+                }
+                requestId = requestAnimationFrame(loop);
+                
+                // Cleanup function
+                return function() {
+                  cancelAnimationFrame(requestId);
+                  document.body.removeChild(cursor);
+                }
+              });
+            `
+          }} />
+        </div>
       </body>
     </html>
   );

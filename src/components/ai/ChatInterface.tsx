@@ -1,10 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import ChatMessage from "./ChatMessage";
 import QuickSuggestions, { QUICK_SUGGESTIONS } from "./QuickSuggestions";
 import { fetchGeminiAPI } from "@/lib/ai";
 import { useFormStore } from "@/stores/useFormStore";
 import { FormField } from '@/types';
 import { FormComponent } from '@/stores/useFormStore';
+
+interface ChatInterfaceProps {
+  initialPrompt?: string | null;
+}
 
 function tryParseComponentsFromAI(text: string): FormComponent[] | null {
   try {
@@ -21,20 +25,21 @@ function tryParseComponentsFromAI(text: string): FormComponent[] | null {
   }
 }
 
-const ChatInterface: React.FC = () => {
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialPrompt }) => {
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initialPrompt || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const setComponents = useFormStore.setState;
+  const initialPromptSent = useRef(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = useCallback(async (text: string) => {
     setMessages((prev) => [...prev, { text, isUser: true }]);
     setLoading(true);
     setError(null);
@@ -53,7 +58,15 @@ const ChatInterface: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [messages, setComponents]);
+
+  // Handle initial prompt
+  useEffect(() => {
+    if (initialPrompt && !initialPromptSent.current) {
+      initialPromptSent.current = true;
+      sendMessage(initialPrompt);
+    }
+  }, [initialPrompt, sendMessage]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

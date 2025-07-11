@@ -111,12 +111,22 @@ export function deepClone<T>(obj: T): T {
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number
-): (...args: Parameters<T>) => void {
+): {
+  (...args: Parameters<T>): void;
+  cancel: () => void;
+} {
   let timeoutId: NodeJS.Timeout;
-  return (...args: Parameters<T>) => {
+  
+  const debouncedFunction = (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
   };
+  
+  debouncedFunction.cancel = () => {
+    clearTimeout(timeoutId);
+  };
+  
+  return debouncedFunction;
 }
 
 // Throttle function
