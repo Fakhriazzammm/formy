@@ -75,19 +75,19 @@ export default function HomePage() {
                   <p className="text-gray-700 mb-4">Contoh prompt yang bisa Anda gunakan:</p>
                   <div className="space-y-3">
                     <div 
-                      onClick={() => handleAIGenerate("Buat form pendaftaran event dengan upload foto")}
+                      onClick={() => handleAIGenerate(`Buat form pendaftaran event dengan upload foto`)}
                       className="bg-white p-4 rounded-lg border border-[#5A4EFF]/20 hover:border-[#5A4EFF]/40 transition-colors cursor-pointer text-gray-800"
                     >
                       &ldquo;Buat form pendaftaran event dengan upload foto&rdquo;
                     </div>
                     <div 
-                      onClick={() => handleAIGenerate("Form survei kepuasan pelanggan dengan rating dan feedback")}
+                      onClick={() => handleAIGenerate(`Form survei kepuasan pelanggan dengan rating dan feedback`)}
                       className="bg-white p-4 rounded-lg border border-[#5A4EFF]/20 hover:border-[#5A4EFF]/40 transition-colors cursor-pointer text-gray-800"
                     >
                       &ldquo;Form survei kepuasan pelanggan dengan rating dan feedback&rdquo;
                     </div>
                     <div 
-                      onClick={() => handleAIGenerate("Form lamaran kerja dengan CV upload dan data pribadi")}
+                      onClick={() => handleAIGenerate(`Form lamaran kerja dengan CV upload dan data pribadi`)}
                       className="bg-white p-4 rounded-lg border border-[#5A4EFF]/20 hover:border-[#5A4EFF]/40 transition-colors cursor-pointer text-gray-800"
                     >
                       &ldquo;Form lamaran kerja dengan CV upload dan data pribadi&rdquo;

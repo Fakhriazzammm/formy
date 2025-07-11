@@ -66,7 +66,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialPrompt }) => {
       initialPromptSent.current = true;
       sendMessage(initialPrompt);
     }
-  }, [initialPrompt, sendMessage]);
+  }, [initialPrompt, sendMessage, initialPromptSent]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
